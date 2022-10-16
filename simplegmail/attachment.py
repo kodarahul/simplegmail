@@ -106,3 +106,22 @@ class Attachment(object):
         with open(filepath, 'wb') as f:
             f.write(self.data)
 
+    def size(self) -> None:
+        """
+        Get the size of data in bytes for an attachment without downloading it.
+
+        Raises:
+            googleapiclient.errors.HttpError: There was an error executing the
+                HTTP request.
+
+        """
+
+        if self.data is not None:
+            return
+
+        res = self._service.users().messages().attachments().get(
+            userId=self.user_id, messageId=self.msg_id, id=self.id, fields='size'
+        ).execute()
+
+        return res['size']
+
